@@ -2,7 +2,7 @@ class Cipher {
     constructor(key = 123) {
         this.key = key;
         this.store = new Map();
-        this.log = new Map();
+        this.log = [];
     }
 
     async encode(code) {
@@ -12,31 +12,31 @@ class Cipher {
             code.split('').forEach(character => {
             let charact = character.charCodeAt() * this.key;
             encoded = encoded + '+' + charact;
+            });
             this.store.set(code, encoded);
-            this.log.set(new Date().toLocaleString(), `"${code}" encoded as "${encoded}"`);
+            this.log.push(`${new Date().toLocaleString()}: "${code}" encoded as "${encoded}"`);
 
-            return encoded;
+        return encoded;
 
-        });
+
     }
 
     async decode(code){
 
-        let decoded = '';
-
-        if (code === null) {
-            return null;
-        }
+        var decoded = '';
 
         if (this.store.has(code)){
             decoded = this.store.get(code);
         }
         else{
-            code.split('/').forEach(word => {
+                var decodeChar = code.split('/');
+                decodeChar.forEach(word => {
                 decoded = decoded + String.fromCharCode(word/this.key);
-            });
+                  });
+
         }
-        this.log.set(new Date().toLocaleString(), `"${code}" decoded as "${decoded}"`);
+       this.log.push(`${new Date().toLocaleString()}: "${code}" decoded as "${decoded}"`);
+      
         return decoded;
 
     }
@@ -56,6 +56,7 @@ class Cipher {
     console.log(msg);
     console.log(await ci.decode(msg));
     console.log(ci.readLog());
+
 })();
 
 
